@@ -1,33 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>nikolasmelui</title>
     <meta name="description"
-      content="FS WD with more than 7 years of strong experience with backend and fronted development, DevOps culture addict, Technology evangilist, Software Applications architect and Team Lead responsible for results." />
+          content="Full-stack web developer (backend based) with 10+ years of experience. Head of VoxEngine &amp; DevTools at Voximplant."/>
     <style>
-      body {
-        background-color: black;
-      }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-      .secret {
-        background: black;
-        width: 2px;
-        height: 400px;
-        position: absolute;
-        left: 7px;
-      }
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
 
+        .crt {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            color: #39ff14;
+            font-family: "Lucida Console", "Courier New", Courier, monospace;
+            font-size: clamp(14px, 1.6vw, 18px);
+            line-height: 1.35;
+            text-shadow: 0 0 4px rgba(57, 255, 20, 0.85),
+            0 0 12px rgba(57, 255, 20, 0.45),
+            0 0 28px rgba(57, 255, 20, 0.2);
+        }
+
+        .crt::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0.15) 0px,
+                    rgba(0, 0, 0, 0.15) 1px,
+                    transparent 1px,
+                    transparent 3px
+            );
+            z-index: 3;
+            opacity: 0.55;
+        }
+
+        .crt::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.65) 100%);
+            z-index: 4;
+        }
+
+        .screen-flash {
+            animation: flash 0.12s ease-out;
+        }
+
+        @keyframes flash {
+            0% {
+                filter: brightness(2.4);
+            }
+
+            100% {
+                filter: brightness(1);
+            }
+        }
+
+        .terminal {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            padding: 1.25rem 1.5rem 2.5rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            white-space: pre-wrap;
+            word-break: break-word;
+            scrollbar-width: thin;
+            scrollbar-color: #1a3a1a #000;
+        }
+
+        .terminal-output::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background: #1a3a1a;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 0.62em;
+            height: 1.05em;
+            margin-left: 1px;
+            vertical-align: text-bottom;
+            background: #39ff14;
+            box-shadow: 0 0 8px #39ff14;
+            animation: blink 1s step-end infinite;
+        }
+
+        .cursor.off {
+            opacity: 0;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .hud {
+            position: fixed;
+            z-index: 5;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.7rem;
+            color: #1f7a1f;
+            text-shadow: none;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .secret {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 8px;
+            height: 100%;
+            z-index: 6;
+            cursor: pointer;
+        }
+
+        .secret:hover {
+            background: rgba(57, 255, 20, 0.06);
+        }
+
+        .help {
+            position: fixed;
+            z-index: 7;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.96);
+            width: min(28rem, calc(100% - 2rem));
+            padding: 1.1rem 1.25rem;
+            border: 1px solid rgba(57, 255, 20, 0.55);
+            background: rgba(0, 12, 0, 0.92);
+            color: #39ff14;
+            text-shadow: 0 0 4px rgba(57, 255, 20, 0.85),
+            0 0 12px rgba(57, 255, 20, 0.35);
+            box-shadow: 0 0 24px rgba(57, 255, 20, 0.2),
+            inset 0 0 40px rgba(57, 255, 20, 0.04);
+            font-size: 0.82rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        }
+
+        .help-row {
+            color: #39ff14;
+            margin-bottom: 0.35rem;
+        }
+
+        .help.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .help kbd {
+            display: inline-block;
+            min-width: 1.4rem;
+            padding: 0 0.35rem;
+            border: 1px solid rgba(57, 255, 20, 0.45);
+            margin-right: 0.35rem;
+            text-align: center;
+            color: #9f9;
+        }
+
+        .help-title {
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #9f9;
+        }
+
+        .help-hint {
+            margin-top: 0.85rem;
+            font-size: 0.72rem;
+            color: #1f7a1f;
+            text-shadow: none;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
-    <div class="secret"></div>
-    <a href="https://github.com/nikolasmelui/nikolasmelui/blob/master/CV.md">
-      <img src="/description.gif" alt="nikolasmelui CV description" />
-    </a>
-  </body>
+<body>
+<div class="crt" id="crt">
+    <div class="terminal">
+        <div class="terminal-output" id="output" aria-live="polite">
+            <span id="typed"></span><span class="cursor" id="cursor" aria-hidden="true"></span>
+        </div>
+    </div>
+</div>
+
+<div class="help" id="help" role="dialog" aria-label="Help" aria-hidden="true">
+    <div class="help-title">&gt; help — keyboard shortcuts</div>
+    <div class="help-row"><kbd>R</kbd> print README.md</div>
+    <div class="help-row"><kbd>C</kbd> print cv.json</div>
+    <div class="help-row"><kbd>F</kbd> fast mode — 10× typing speed (toggle)</div>
+    <div class="help-row"><kbd>H</kbd> or <kbd>Enter</kbd> toggle this help</div>
+    <div class="help-hint">&gt; profile data source: cv.json</div>
+</div>
+
+<div class="hud" aria-hidden="true">
+    <span id="mode-label">typing</span>
+    <span>[H] or [Enter] help · [R] readme · [C] cv · [F] fast</span>
+</div>
+
+<div class="secret" title="Help" aria-label="Toggle help"></div>
+
+<script>
+    const MODES = {
+        both: 'both',
+        readme: 'readme',
+        cv: 'cv',
+    };
+    const FAST_MULTIPLIER = 0.1;
+
+    let activeMode = MODES.both;
+    let typingToken = 0;
+    let readmeText = '';
+    let cvText = '';
+
+    const crt = document.getElementById('crt');
+    const typedEl = document.getElementById('typed');
+    const cursorEl = document.getElementById('cursor');
+    const outputEl = document.getElementById('output');
+    const modeLabel = document.getElementById('mode-label');
+    const helpEl = document.getElementById('help');
+    let helpVisible = false;
+    let isTyping = false;
+    let fastMode = false;
+
+      function formatCvPlain(cv) {
+        const jobs = cv.work?.positions || [];
+        const current = jobs.find((w) => w.actual);
+        const sections = [
+          `// ${cv.name} · ${cv.role}`,
+          `// ${cv.place} · ${cv.experience}`,
+          '',
+          JSON.stringify(
+            {
+              name: cv.name,
+              role: cv.role,
+              headline: cv.headline,
+              experience: cv.experience,
+              contacts: cv.contacts,
+              skills: cv.skills,
+              interested: cv.interested,
+              love: cv.love,
+              current: current
+                ? { company: current.company, position: current.position }
+                : null,
+            },
+            null,
+            2,
+          ),
+          '',
+          '// work.positions[]',
+          ...jobs.map((job) => {
+            const tag = job.actual ? '[current]' : '[past]';
+            const projects = (job.projects || [])
+              .map((p) => `  - ${p.title} (${p.role})`)
+              .join('\n');
+            const header = `${tag} ${job.position} @ ${job.company}`;
+            return projects ? `${header}\n${projects}` : header;
+          }),
+          '',
+          '// community[]',
+          ...(cv.community || []).map((c) => `  - ${c.title}: ${c.org}`),
+        ];
+
+        return sections.join('\n');
+      }
+
+    function updateModeLabel() {
+        if (helpVisible) {
+            modeLabel.textContent = 'help';
+            return;
+        }
+        if (isTyping) {
+            const speed = fastMode ? ' · fast' : '';
+            modeLabel.textContent = `typing · ${activeMode}${speed}`;
+            return;
+        }
+        modeLabel.textContent = typedEl.textContent ? (fastMode ? 'done · fast' : 'done') : 'ready';
+    }
+
+    function toggleFastMode() {
+        fastMode = !fastMode;
+        updateModeLabel();
+    }
+
+    function toggleHelp() {
+        helpVisible = !helpVisible;
+        helpEl.classList.toggle('visible', helpVisible);
+        helpEl.setAttribute('aria-hidden', String(!helpVisible));
+        updateModeLabel();
+    }
+
+    function flashScreen() {
+        crt.classList.remove('screen-flash');
+        void crt.offsetWidth;
+        crt.classList.add('screen-flash');
+    }
+
+    function stripCvMarkers(text) {
+        const start = '<!-- cv:start -->';
+        const end = '<!-- cv:end -->';
+        const i = text.indexOf(start);
+        const j = text.indexOf(end);
+        if (i === -1 || j === -1) return text.trim();
+        return text.slice(i + start.length, j).trim();
+    }
+
+    function markdownToTerminal(text) {
+        return text
+            .replace(/\r\n/g, '\n')
+            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 <$2>')
+            .replace(/\*\*([^*]+)\*\*/g, '$1')
+            .replace(/<!--[\s\S]*?-->/g, '')
+            .replace(/[ \t]+$/gm, '')
+            .trim();
+    }
+
+    function buildScript(mode) {
+        const intro = [
+            '',
+            'Wake up, %username%...',
+            'The AI world and all the neuroslope has you...',
+            `Follow the... I don't know... common sense, white rabbit, or some other bullshit.`,
+            '',
+            '... knock knock.',
+        ];
+
+        const preamble = [
+            '',
+            '> remote session opened',
+            '> host: nikolasmelui.github.io',
+            '> channel: secure / green',
+            '',
+        ];
+
+        const chunks = [];
+
+        if (mode === MODES.both) {
+            chunks.push(...intro, ...preamble);
+        } else {
+            chunks.push(...preamble);
+        }
+
+        if (mode === MODES.both || mode === MODES.readme) {
+            chunks.push('> cat README.md', '', readmeText, '');
+        }
+
+        if (mode === MODES.both || mode === MODES.cv) {
+            chunks.push('> cat cv.json', '', cvText, '');
+        }
+
+        chunks.push('> connection closed_', '');
+
+        return chunks.join('\n');
+    }
+
+    function delay(ms) {
+        return new Promise((resolve) => {
+            window.setTimeout(resolve, ms);
+        });
+    }
+
+    function baseCharDelay(char, prevChar) {
+        if (char === '\n') {
+            if (prevChar === '\n') return 220 + Math.random() * 180;
+            return 90 + Math.random() * 120;
+        }
+        if (char === '.') return 140 + Math.random() * 200;
+        if (char === '>' || char === '_') return 35 + Math.random() * 45;
+        if (char === ' ') return 18 + Math.random() * 28;
+        return 12 + Math.random() * 38;
+    }
+
+    function charDelay(char, prevChar) {
+        const base = baseCharDelay(char, prevChar);
+        if (!fastMode) return base;
+        return Math.max(1, Math.round(base * FAST_MULTIPLIER));
+    }
+
+    async function typeText(text, token) {
+        typedEl.textContent = '';
+        cursorEl.classList.remove('off');
+        let buffer = '';
+
+        for (let i = 0; i < text.length; i += 1) {
+            if (token !== typingToken) return;
+
+            const char = text[i];
+            const prev = i > 0 ? text[i - 1] : '';
+
+            if (char === '\n' && buffer.endsWith('...')) {
+                flashScreen();
+            }
+
+            buffer += char;
+            typedEl.textContent = buffer;
+
+            outputEl.scrollTop = outputEl.scrollHeight;
+
+            await delay(charDelay(char, prev));
+        }
+
+        cursorEl.classList.add('off');
+        isTyping = false;
+        updateModeLabel();
+    }
+
+    async function startTyping(mode = activeMode) {
+        typingToken += 1;
+        const token = typingToken;
+        activeMode = mode;
+        isTyping = true;
+        updateModeLabel();
+
+        flashScreen();
+        await delay(fastMode ? 28 : 280);
+
+        await typeText(buildScript(mode), token);
+    }
+
+    function stripForTerminal(text) {
+        return markdownToTerminal(stripCvMarkers(text));
+    }
+
+    async function loadSources() {
+        const cv = await fetch('cv.json').then((r) => {
+            if (!r.ok) throw new Error('cv.json not found');
+            return r.json();
+        });
+        cvText = formatCvPlain(cv);
+
+        try {
+            const response = await fetch('README.md');
+            if (!response.ok) throw new Error('README.md not found');
+            readmeText = stripForTerminal(await response.text());
+        } catch {
+          const current = (cv.work?.positions || []).find((w) => w.actual);
+          readmeText = `${cv.headline} · ${cv.experience} · ${cv.role}${current ? ` at ${current.company}` : ''}`;
+        }
+    }
+
+    function setMode(mode) {
+        if (!MODES[mode]) return;
+        startTyping(mode);
+    }
+
+    document.querySelector('.secret').addEventListener('click', toggleHelp);
+
+    window.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+
+        if (key === 'h' || key === 'enter') {
+            event.preventDefault();
+            toggleHelp();
+            return;
+        }
+
+        if (key === 'f') {
+            toggleFastMode();
+            return;
+        }
+
+        if (key === 'r') setMode('readme');
+        if (key === 'c') setMode('cv');
+    });
+
+    loadSources().then(() => startTyping(MODES.both));
+</script>
+</body>
 
 </html>

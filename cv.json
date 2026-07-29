@@ -1,0 +1,351 @@
+{
+  "name": "Nikolai Sladkii",
+  "birth": 1991,
+  "place": "Russia, Moscow",
+  "role": "Head of VoxEngine & DevTools",
+  "headline": "Principal backend engineer",
+  "experience": "10+ years in building scalable and maintainable systems",
+  "contacts": {
+    "phone": "+79093442211",
+    "email": "slak@samaradom.ru",
+    "socials": "@nikolasmelui"
+  },
+  "skills": {
+    "techs": [
+      "golang (primary)",
+      "javascript/typescript (backend based, custom javascript engines)",
+      "node.js",
+      "python",
+      "dotnet",
+      "java",
+      "php",
+      "react/vue (not primary)"
+    ],
+    "tools": [
+      "postgresql",
+      "mongodb",
+      "redis",
+      "rabbitmq",
+      "nginx",
+      "postman",
+      "git"
+    ],
+    "ops": [
+      "docker",
+      "kubernetes",
+      "ansible",
+      "ci/cd",
+      "github actions"
+    ],
+    "observability": [
+      "prometheus",
+      "grafana",
+      "log aggregation"
+    ],
+    "methodologies": [
+      "ddd",
+      "tdd",
+      "bdd",
+      "agile",
+      "scrum"
+    ],
+    "patterns": [
+      "microservices",
+      "event-driven",
+      "rest",
+      "graphql"
+    ],
+    "concepts": [
+      "clean code",
+      "clean architecture",
+      "4+1 architectural views"
+    ]
+  },
+  "interested": {
+    "hard": [
+      "rust"
+    ],
+    "soft": [
+      "community building",
+      "mentoring",
+      "public speaking",
+      "consulting",
+      "open source contribution"
+    ]
+  },
+  "love": [
+    "*nix",
+    "terminal",
+    "vim"
+  ],
+  "community": [
+    {
+      "title": "VP",
+      "org": "Samara IT Community",
+      "url": "https://sitc.community/"
+    },
+    {
+      "title": "Chairman",
+      "org": "Пивной Четверг",
+      "url": "https://beer4.ru",
+      "altUrl": "https://boosty.to/beer4"
+    },
+    {
+      "title": "Co-author & technology stakeholder",
+      "org": "Junost",
+      "url": "https://anmedio.github.io/junost/"
+    },
+    {
+      "title": "Speaker",
+      "org": "GrindConf",
+      "url": "https://sitc.community/events/grind-conf/"
+    },
+    {
+      "title": "Expert",
+      "org": "VolgaHack",
+      "url": "https://sitc.community/events/volgahack/"
+    },
+    {
+      "title": "Host",
+      "org": "SITCast & SITalk",
+      "url": "https://podcasts.apple.com/ru/podcast/sitcast/id1449716272"
+    }
+  ],
+  "work": {
+    "positions": [
+      {
+        "company": "Voximplant",
+        "actual": true,
+        "position": "Head of VoxEngine & DevTools",
+        "url": "https://voximplant.com",
+        "projects": [
+          {
+            "title": "AIConnector - real-time media traffic routing high-performance backend service",
+            "description": "AIConnector is a high-performance backend service designed for real-time media traffic routing between client applications and leading Conversational AI providers (e.g. Gemini, OpenAI, Ultravox, etc.) or ONNX local models (e.g. Silero VAD, Pipecat TURN, Hush Noise Suppression, etc.)",
+            "more": "https://voximplant.com/docs/voice-ai",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "golang",
+              "c++",
+              "python"
+            ],
+            "tasks": [
+              "product and platform direction",
+              "application architecture design",
+              "backend API development",
+              "real-time media traffic routing",
+              "integration with third-party AI providers",
+              "integration with ONNX local models (ONNX Runtime Bridge C++ based)"
+            ]
+          },
+          {
+            "title": "VoxEngine — cloud runtime for JavaScript scenarios: calls, IVR, speech synthesis/recognition, recordings, etc.",
+            "description": "VoxEngine is a cloud runtime for JavaScript scenarios that enables developers to build and deploy real-time communication applications, including voice calls, IVR systems, speech synthesis and recognition, call recordings, and more.",
+            "more": "https://voximplant.com/docs/guides/voxengine",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "javascript/typescript",
+              "c++"
+            ],
+            "tasks": [
+              "platform architecture and evolution",
+              "backend API development",
+              "developer experience and tooling"
+            ]
+          },
+          {
+            "title": "VoxEngine CI — continuous integration for VoxEngine scenarios: testing, linting, deployment, etc.",
+            "description": "VoxEngine CI is a continuous integration system for VoxEngine scenarios that provides automated testing, linting, deployment, and other development workflow features to ensure code quality and streamline the development process.",
+            "more": "https://voximplant.com/docs/guides/voxengine/ci",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "node.js",
+              "ci tooling"
+            ],
+            "tasks": [
+              "product and platform direction",
+              "application architecture design",
+              "backend API and developer tooling"
+            ]
+          },
+          {
+            "title": "Voximplant API client (node.js)",
+            "description": "Voximplant API client is official library for node.js that provide developers with convenient access to the Voximplant platform's REST API, enabling them to integrate real-time communication features into their applications.",
+            "more": "https://github.com/voximplant/apiclient-nodejs",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "node.js",
+              "typescript"
+            ],
+            "tasks": [
+              "library design",
+              "open source contribution automation"
+            ]
+          },
+          {
+            "title": "Voximplant API client (python)",
+            "description": "Voximplant API client is official library for python that provide developers with convenient access to the Voximplant platform's REST API, enabling them to integrate real-time communication features into their applications.",
+            "more": "https://github.com/voximplant/apiclient-python",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "python"
+            ],
+            "tasks": [
+              "library design",
+              "open source contribution automation"
+            ]
+          },
+          {
+            "title": "Voximplant API client (php)",
+            "description": "Voximplant API client is official library for php that provide developers with convenient access to the Voximplant platform's REST API, enabling them to integrate real-time communication features into their applications.",
+            "more": "https://github.com/voximplant/apiclient-php",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "php"
+            ],
+            "tasks": [
+              "library design",
+              "open source contribution automation"
+            ]
+          },
+          {
+            "title": "Voximplant API client (java)",
+            "description": "Voximplant API client is official library for java that provide developers with convenient access to the Voximplant platform's REST API, enabling them to integrate real-time communication features into their applications.",
+            "more": "https://github.com/voximplant/apiclient-java",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "java"
+            ],
+            "tasks": [
+              "library design",
+              "open source contribution automation"
+            ]
+          },
+          {
+            "title": "Voximplant API client (dotnet)",
+            "description": "Voximplant API client is official library for dotnet that provide developers with convenient access to the Voximplant platform's REST API, enabling them to integrate real-time communication features into their applications.",
+            "more": "https://github.com/voximplant/apiclient-dotnet",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "dotnet"
+            ],
+            "tasks": [
+              "library design",
+              "open source contribution automation"
+            ]
+          },
+          {
+            "title": "Voximplant API client (golang)",
+            "description": "Voximplant API client is official library for golang that provide developers with convenient access to the Voximplant platform's REST API, enabling them to integrate real-time communication features into their applications.",
+            "more": "https://github.com/voximplant/apiclient-golang",
+            "role": "Head of VoxEngine & DevTools, principal engineer",
+            "tech": [
+              "golang"
+            ],
+            "tasks": [
+              "library design",
+              "open source contribution automation"
+            ]
+          }
+        ]
+      },
+      {
+        "company": "Mechanica",
+        "actual": false,
+        "position": "Principal engineer",
+        "url": "https://mechanica.agency/",
+        "projects": [
+          {
+            "title": "Backend for bonuses, discounts, and cashback system",
+            "description": "Backend for bonuses, discounts, and cashback system for a large retail chain",
+            "role": "Principal engineer (backend)",
+            "tech": [
+              "php",
+              "laravel"
+            ],
+            "tasks": [
+              "backend API development",
+              "CMS integration adapters",
+              "complex legacy infrastructure"
+            ]
+          },
+          {
+            "title": "Backend for online ESports events poster",
+            "description": "Backend for online ESports events poster with user registration, ticketing, push-notifications, payment system integration and more features",
+            "role": "Principal engineer (backend)",
+            "tech": [
+              "node.js",
+              "strapi"
+            ],
+            "tasks": [
+              "application architecture design",
+              "backend API development",
+              "aggregation service for third-party data feeds",
+              "push-notification module"
+            ]
+          }
+        ]
+      },
+      {
+        "company": "Anmedio",
+        "actual": false,
+        "position": "CTO",
+        "url": "https://anmedio.ru",
+        "projects": [
+          {
+            "title": "Junost — online platform for self-development and personal growth as a technical specialist",
+            "description": "Junost is an online platform for self-development and personal growth as a technical specialist, providing users with access to educational resources, mentorship, and community support.",
+            "more": "https://anmedio.github.io/junost/",
+            "role": "CTO, principal engineer",
+            "tech": [
+              "node.js",
+              "strapi"
+            ],
+            "tasks": [
+              "application architecture design",
+              "backend API development",
+              "aggregation service for third-party data feeds",
+              "push-notification module"
+            ]
+          },
+          {
+            "title": "Golang microservice for B2B electronics portal (collect, cache, diff, sync)",
+            "description": "Golang microservice for B2B electronics portal that collects data from multiple sources, caches it, detects changes, and synchronizes it with the main database.",
+            "role": "Principal engineer (backend)",
+            "tech": [
+              "golang",
+              "redis"
+            ],
+            "tasks": [
+              "application architecture design",
+              "backend API development",
+              "caching and change-detection pipelines"
+            ]
+          },
+          {
+            "title": "Full-stack back-office for iVolga 2.0 youth forum",
+            "description": "Full-stack back-office for iVolga 2.0 youth forum, providing administrative tools for managing event registration, participant accreditation, and inventory tracking.",
+            "role": "Principal engineer (full-stack)",
+            "tech": [
+              "node.js",
+              "loopback",
+              "react"
+            ],
+            "tasks": [
+              "application architecture design",
+              "backend API and frontend UI development",
+              "inventory, registration, authorization, accreditation modules"
+            ]
+          }
+        ]
+      },
+      {
+        "company": "Multikey Studio",
+        "actual": false,
+        "position": "Co-founder & CTO",
+        "url": "https://multikey.studio",
+        "projects": []
+      }
+    ]
+  }
+}

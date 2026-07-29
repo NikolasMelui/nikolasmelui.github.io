@@ -1,16 +1,28 @@
-[![CV description](https://github.com/nikolasmelui/nikolasmelui/blob/master/description.gif)](https://github.com/nikolasmelui/nikolasmelui/blob/master/CV.md)
+# nikolasmelui
 
-<!--
-**NikolasMelui/nikolasmelui** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Profile and CV live in [`cv.json`](./cv.json) — the single source of truth.
 
-Here are some ideas to get you started:
+- **Site:** [nikolasmelui.github.io](https://nikolasmelui.github.io/) — Matrix-style view of README + CV
+- **Sync README bio from cv.json:** `node scripts/sync-readme.js`
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+<!-- cv:start -->
+Who am I? 🤔  
+Principal backend engineer with 10+ years in building scalable and maintainable systems 💪  
+DevOps culture addict, technology evangelist, software applications architect and lead, responsible for results 👍  
+Open Source contributor 🌱 and IT community enthusiast 🌿, speaker at conferences and meetups 🎤,  
+ex-Principal engineer at [Mechanica](https://mechanica.agency/), ex-CTO at [Anmedio](https://anmedio.ru), ex-Co-founder & CTO at [Multikey Studio](https://multikey.studio),  
+VP at [Samara IT Community](https://sitc.community/)  
+Chairman of [Пивной Четверг](https://beer4.ru) / [Пивной Четверг — Boosty](https://boosty.to/beer4)  
+Co-author & technology stakeholder at [Junost](https://anmedio.github.io/junost/)  
+Speaker at [GrindConf](https://sitc.community/events/grind-conf/)  
+Expert at [VolgaHack](https://sitc.community/events/volgahack/)  
+Host at [SITCast & SITalk](https://podcasts.apple.com/ru/podcast/sitcast/id1449716272)  
+In love with *nix, terminal, vim 😻  
+...  
+Currently working hard on [AIConnector](https://voximplant.com/docs/voice-ai), [VoxEngine](https://voximplant.com/docs/guides/voxengine), [VoxEngine CI](https://voximplant.com/docs/guides/voxengine/ci), [Voximplant API client (node.js)](https://github.com/voximplant/apiclient-nodejs), [Voximplant API client (python)](https://github.com/voximplant/apiclient-python), [Voximplant API client (php)](https://github.com/voximplant/apiclient-php), [Voximplant API client (java)](https://github.com/voximplant/apiclient-java), [Voximplant API client (dotnet)](https://github.com/voximplant/apiclient-dotnet), [Voximplant API client (golang)](https://github.com/voximplant/apiclient-golang) and other cool things 🔥 at [Voximplant](https://voximplant.com) as **Head of VoxEngine & DevTools** 👷  
+...  
+@nikolasmelui — all socials 💬  
+...  
+[CV source: cv.json](https://github.com/NikolasMelui/nikolasmelui/blob/master/cv.json) · [Site](https://nikolasmelui.github.io/)  
+...  
+<!-- cv:end -->
