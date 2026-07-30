@@ -235,23 +235,24 @@
 
 <div class="hud" aria-hidden="true">
     <span id="mode-label">typing</span>
-    <span>[H] or [Enter] help · [R] readme · [C] cv · [F] fast</span>
+    <span>[R] readme · [C] cv · [H]/[Enter] help · [F] fast</span>
 </div>
 
 <div class="secret" title="Help" aria-label="Toggle help"></div>
 
 <script>
     const MODES = {
-        both: 'both',
+        boot: 'boot',
         readme: 'readme',
         cv: 'cv',
     };
     const FAST_MULTIPLIER = 0.1;
 
-    let activeMode = MODES.both;
+    let activeMode = MODES.boot;
     let typingToken = 0;
     let readmeText = '';
     let cvText = '';
+    let baseScreen = '';
 
     const crt = document.getElementById('crt');
     const typedEl = document.getElementById('typed');
@@ -261,49 +262,94 @@
     const helpEl = document.getElementById('help');
     let helpVisible = false;
     let isTyping = false;
+    let awaitingChoice = false;
     let fastMode = false;
 
-      function formatCvPlain(cv) {
+    function formatCvPlain(cv) {
         const jobs = cv.work?.positions || [];
         const current = jobs.find((w) => w.actual);
         const sections = [
-          `// ${cv.name} · ${cv.role}`,
-          `// ${cv.place} · ${cv.experience}`,
-          '',
-          JSON.stringify(
-            {
-              name: cv.name,
-              role: cv.role,
-              headline: cv.headline,
-              experience: cv.experience,
-              contacts: cv.contacts,
-              skills: cv.skills,
-              interested: cv.interested,
-              love: cv.love,
-              current: current
-                ? { company: current.company, position: current.position }
-                : null,
-            },
-            null,
-            2,
-          ),
-          '',
-          '// work.positions[]',
-          ...jobs.map((job) => {
-            const tag = job.actual ? '[current]' : '[past]';
-            const projects = (job.projects || [])
-              .map((p) => `  - ${p.title} (${p.role})`)
-              .join('\n');
-            const header = `${tag} ${job.position} @ ${job.company}`;
-            return projects ? `${header}\n${projects}` : header;
-          }),
-          '',
-          '// community[]',
-          ...(cv.community || []).map((c) => `  - ${c.title}: ${c.org}`),
+            `// ${cv.name} · ${cv.role}`,
+            `// ${cv.place} · ${cv.experience}`,
+            '',
+            JSON.stringify(
+                {
+                    name: cv.name,
+                    role: cv.role,
+                    headline: cv.headline,
+                    experience: cv.experience,
+                    contacts: cv.contacts,
+                    skills: cv.skills,
+                    interested: cv.interested,
+                    love: cv.love,
+                    current: current
+                        ? { company: current.company, position: current.position }
+                        : null,
+                },
+                null,
+                2,
+            ),
+            '',
+            '// work.positions[]',
+            ...jobs.map((job) => {
+                const tag = job.actual ? '[current]' : '[past]';
+                const projects = (job.projects || [])
+                    .map((p) => `  - ${p.title} (${p.role})`)
+                    .join('\n');
+                const header = `${tag} ${job.position} @ ${job.company}`;
+                return projects ? `${header}\n${projects}` : header;
+            }),
+            '',
+            '// community[]',
+            ...(cv.community || []).map((c) => `  - ${c.title}: ${c.org}`),
         ];
 
         return sections.join('\n');
-      }
+    }
+
+    function choicePanel() {
+        return [
+            '',
+            '> choose:',
+            '  [R] README.md',
+            '  [C] cv.json',
+            '  [H] or [Enter] help',
+            '',
+            '> ',
+        ].join('\n');
+    }
+
+    function bootScript() {
+        return [
+            '',
+            'Wake up, %username%...',
+            'The AI world and all the neuroslope has you...',
+            `Follow the... I don't know... common sense, white rabbit, or some other bullshit.`,
+            '',
+            '... knock knock.',
+            '',
+            '> remote session opened',
+            '> host: nikolasmelui.github.io',
+            '> channel: secure / green',
+            choicePanel(),
+        ].join('\n');
+    }
+
+    function contentScript(mode) {
+        const chunks = [
+            '',
+            `> selected: ${mode === MODES.readme ? 'R' : 'C'}`,
+        ];
+
+        if (mode === MODES.readme) {
+            chunks.push('> cat README.md', '', readmeText, '');
+        } else if (mode === MODES.cv) {
+            chunks.push('> cat cv.json', '', cvText, '');
+        }
+
+        chunks.push('> done', choicePanel());
+        return chunks.join('\n');
+    }
 
     function updateModeLabel() {
         if (helpVisible) {
@@ -313,6 +359,10 @@
         if (isTyping) {
             const speed = fastMode ? ' · fast' : '';
             modeLabel.textContent = `typing · ${activeMode}${speed}`;
+            return;
+        }
+        if (awaitingChoice) {
+            modeLabel.textContent = fastMode ? 'awaiting · fast' : 'awaiting choice';
             return;
         }
         modeLabel.textContent = typedEl.textContent ? (fastMode ? 'done · fast' : 'done') : 'ready';
@@ -355,45 +405,6 @@
             .trim();
     }
 
-    function buildScript(mode) {
-        const intro = [
-            '',
-            'Wake up, %username%...',
-            'The AI world and all the neuroslope has you...',
-            `Follow the... I don't know... common sense, white rabbit, or some other bullshit.`,
-            '',
-            '... knock knock.',
-        ];
-
-        const preamble = [
-            '',
-            '> remote session opened',
-            '> host: nikolasmelui.github.io',
-            '> channel: secure / green',
-            '',
-        ];
-
-        const chunks = [];
-
-        if (mode === MODES.both) {
-            chunks.push(...intro, ...preamble);
-        } else {
-            chunks.push(...preamble);
-        }
-
-        if (mode === MODES.both || mode === MODES.readme) {
-            chunks.push('> cat README.md', '', readmeText, '');
-        }
-
-        if (mode === MODES.both || mode === MODES.cv) {
-            chunks.push('> cat cv.json', '', cvText, '');
-        }
-
-        chunks.push('> connection closed_', '');
-
-        return chunks.join('\n');
-    }
-
     function delay(ms) {
         return new Promise((resolve) => {
             window.setTimeout(resolve, ms);
@@ -417,13 +428,13 @@
         return Math.max(1, Math.round(base * FAST_MULTIPLIER));
     }
 
-    async function typeText(text, token) {
-        typedEl.textContent = '';
+    async function typeText(text, token, { clear = true, keepCursor = false } = {}) {
+        if (clear) typedEl.textContent = '';
         cursorEl.classList.remove('off');
-        let buffer = '';
+        let buffer = clear ? '' : typedEl.textContent;
 
         for (let i = 0; i < text.length; i += 1) {
-            if (token !== typingToken) return;
+            if (token !== typingToken) return false;
 
             const char = text[i];
             const prev = i > 0 ? text[i - 1] : '';
@@ -434,28 +445,64 @@
 
             buffer += char;
             typedEl.textContent = buffer;
-
             outputEl.scrollTop = outputEl.scrollHeight;
 
             await delay(charDelay(char, prev));
         }
 
-        cursorEl.classList.add('off');
+        if (token !== typingToken) return false;
+
+        if (!keepCursor) cursorEl.classList.add('off');
         isTyping = false;
         updateModeLabel();
+        return true;
     }
 
-    async function startTyping(mode = activeMode) {
+    async function startBoot() {
         typingToken += 1;
         const token = typingToken;
-        activeMode = mode;
+        activeMode = MODES.boot;
+        awaitingChoice = false;
         isTyping = true;
         updateModeLabel();
 
         flashScreen();
         await delay(fastMode ? 28 : 280);
 
-        await typeText(buildScript(mode), token);
+        const text = bootScript();
+        const ok = await typeText(text, token, { clear: true, keepCursor: true });
+        if (!ok) return;
+
+        baseScreen = typedEl.textContent;
+        awaitingChoice = true;
+        updateModeLabel();
+    }
+
+    async function startChoice(mode) {
+        if (mode !== MODES.readme && mode !== MODES.cv) return;
+
+        typingToken += 1;
+        const token = typingToken;
+        activeMode = mode;
+        awaitingChoice = false;
+        isTyping = true;
+        updateModeLabel();
+
+        if (helpVisible) toggleHelp();
+        flashScreen();
+        await delay(fastMode ? 28 : 280);
+
+        typedEl.textContent = baseScreen || typedEl.textContent;
+        const ok = await typeText(contentScript(mode), token, {
+            clear: false,
+            keepCursor: true,
+        });
+        if (!ok) return;
+
+        baseScreen = typedEl.textContent;
+        awaitingChoice = true;
+        updateModeLabel();
+        outputEl.scrollTop = outputEl.scrollHeight;
     }
 
     function stripForTerminal(text) {
@@ -474,14 +521,9 @@
             if (!response.ok) throw new Error('README.md not found');
             readmeText = stripForTerminal(await response.text());
         } catch {
-          const current = (cv.work?.positions || []).find((w) => w.actual);
-          readmeText = `${cv.headline} · ${cv.experience} · ${cv.role}${current ? ` at ${current.company}` : ''}`;
+            const current = (cv.work?.positions || []).find((w) => w.actual);
+            readmeText = `${cv.headline} · ${cv.experience} · ${cv.role}${current ? ` at ${current.company}` : ''}`;
         }
-    }
-
-    function setMode(mode) {
-        if (!MODES[mode]) return;
-        startTyping(mode);
     }
 
     document.querySelector('.secret').addEventListener('click', toggleHelp);
@@ -500,11 +542,21 @@
             return;
         }
 
-        if (key === 'r') setMode('readme');
-        if (key === 'c') setMode('cv');
+        if (!awaitingChoice) return;
+
+        if (key === 'r') {
+            event.preventDefault();
+            startChoice(MODES.readme);
+            return;
+        }
+
+        if (key === 'c') {
+            event.preventDefault();
+            startChoice(MODES.cv);
+        }
     });
 
-    loadSources().then(() => startTyping(MODES.both));
+    loadSources().then(() => startBoot());
 </script>
 </body>
 

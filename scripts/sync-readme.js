@@ -16,9 +16,6 @@ function positions(cv) {
 
 function formatCommunityLine(entry) {
     const title = entry.title;
-    if (entry.altUrl) {
-        return `${title} of [${entry.org}](${entry.url}) / [${entry.org} — Boosty](${entry.altUrl})`;
-    }
     return `${title} at [${entry.org}](${entry.url})`;
 }
 

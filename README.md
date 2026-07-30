@@ -12,7 +12,7 @@ DevOps culture addict, technology evangelist, software applications architect an
 Open Source contributor 🌱 and IT community enthusiast 🌿, speaker at conferences and meetups 🎤,  
 ex-Principal engineer at [Mechanica](https://mechanica.agency/), ex-CTO at [Anmedio](https://anmedio.ru), ex-Co-founder & CTO at [Multikey Studio](https://multikey.studio),  
 VP at [Samara IT Community](https://sitc.community/)  
-Chairman of [Пивной Четверг](https://beer4.ru) / [Пивной Четверг — Boosty](https://boosty.to/beer4)  
+Chairman at [Пивной Четверг](https://beer4.ru)  
 Co-author & technology stakeholder at [Junost](https://anmedio.github.io/junost/)  
 Speaker at [GrindConf](https://sitc.community/events/grind-conf/)  
 Expert at [VolgaHack](https://sitc.community/events/volgahack/)  
