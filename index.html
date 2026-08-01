@@ -152,66 +152,6 @@
         .secret:hover {
             background: rgba(57, 255, 20, 0.06);
         }
-
-        .help {
-            position: fixed;
-            z-index: 7;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(0.96);
-            width: min(28rem, calc(100% - 2rem));
-            padding: 1.1rem 1.25rem;
-            border: 1px solid rgba(57, 255, 20, 0.55);
-            background: rgba(0, 12, 0, 0.92);
-            color: #39ff14;
-            text-shadow: 0 0 4px rgba(57, 255, 20, 0.85),
-            0 0 12px rgba(57, 255, 20, 0.35);
-            box-shadow: 0 0 24px rgba(57, 255, 20, 0.2),
-            inset 0 0 40px rgba(57, 255, 20, 0.04);
-            font-size: 0.82rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-        }
-
-        .help-row {
-            color: #39ff14;
-            margin-bottom: 0.35rem;
-        }
-
-        .help.visible {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .help kbd {
-            display: inline-block;
-            min-width: 1.4rem;
-            padding: 0 0.35rem;
-            border: 1px solid rgba(57, 255, 20, 0.45);
-            margin-right: 0.35rem;
-            text-align: center;
-            color: #9f9;
-        }
-
-        .help-title {
-            margin-bottom: 0.75rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #9f9;
-        }
-
-        .help-hint {
-            margin-top: 0.85rem;
-            font-size: 0.72rem;
-            color: #1f7a1f;
-            text-shadow: none;
-        }
     </style>
 </head>
 
@@ -224,46 +164,32 @@
     </div>
 </div>
 
-<div class="help" id="help" role="dialog" aria-label="Help" aria-hidden="true">
-    <div class="help-title">&gt; help — keyboard shortcuts</div>
-    <div class="help-row"><kbd>R</kbd> print README.md</div>
-    <div class="help-row"><kbd>C</kbd> print cv.json</div>
-    <div class="help-row"><kbd>F</kbd> fast mode — 10× typing speed (toggle)</div>
-    <div class="help-row"><kbd>H</kbd> or <kbd>Enter</kbd> toggle this help</div>
-    <div class="help-hint">&gt; profile data source: cv.json</div>
-</div>
-
 <div class="hud" aria-hidden="true">
     <span id="mode-label">typing</span>
-    <span>[R] readme · [C] cv · [H]/[Enter] help · [F] fast</span>
+    <span>type a command · enter to run · enter while typing to speed up · help / ? · r / readme · c / cv</span>
 </div>
 
-<div class="secret" title="Help" aria-label="Toggle help"></div>
+<div class="secret" title="help" aria-label="Run help"></div>
 
 <script>
-    const MODES = {
-        boot: 'boot',
-        readme: 'readme',
-        cv: 'cv',
-    };
     const FAST_MULTIPLIER = 0.1;
 
-    let activeMode = MODES.boot;
     let typingToken = 0;
     let readmeText = '';
     let cvText = '';
     let baseScreen = '';
+    let inputBuffer = '';
 
     const crt = document.getElementById('crt');
     const typedEl = document.getElementById('typed');
     const cursorEl = document.getElementById('cursor');
     const outputEl = document.getElementById('output');
     const modeLabel = document.getElementById('mode-label');
-    const helpEl = document.getElementById('help');
-    let helpVisible = false;
+
     let isTyping = false;
-    let awaitingChoice = false;
+    let interactive = false;
     let fastMode = false;
+    let phase = 'boot';
 
     function formatCvPlain(cv) {
         const jobs = cv.work?.positions || [];
@@ -307,16 +233,23 @@
         return sections.join('\n');
     }
 
-    function choicePanel() {
+    function helpText() {
         return [
             '',
-            '> choose:',
-            '  [R] README.md',
-            '  [C] cv.json',
-            '  [H] or [Enter] help',
+            '> help — available commands',
+            '  help, ?              show this help',
+            '  readme, r            print README.md',
+            '  cv, c                print cv.json',
+            '  clear                clear the screen',
             '',
-            '> ',
+            '> tip: press Enter while printing to speed up',
+            '> profile data source: cv.json',
+            '',
         ].join('\n');
+    }
+
+    function promptLine() {
+        return '> ';
     }
 
     function bootScript() {
@@ -331,52 +264,49 @@
             '> remote session opened',
             '> host: nikolasmelui.github.io',
             '> channel: secure / green',
-            choicePanel(),
+            '',
+            '> type a command (help / ? for list)',
+            '',
+            promptLine(),
         ].join('\n');
     }
 
-    function contentScript(mode) {
-        const chunks = [
+    function commandOutput(name, body) {
+        return ['', `> ${name}`, '', body, '', promptLine()].join('\n');
+    }
+
+    function unknownOutput(raw) {
+        return [
             '',
-            `> selected: ${mode === MODES.readme ? 'R' : 'C'}`,
-        ];
-
-        if (mode === MODES.readme) {
-            chunks.push('> cat README.md', '', readmeText, '');
-        } else if (mode === MODES.cv) {
-            chunks.push('> cat cv.json', '', cvText, '');
-        }
-
-        chunks.push('> done', choicePanel());
-        return chunks.join('\n');
+            `command not found: ${raw}`,
+            'try: help',
+            '',
+            promptLine(),
+        ].join('\n');
     }
 
     function updateModeLabel() {
-        if (helpVisible) {
-            modeLabel.textContent = 'help';
-            return;
-        }
         if (isTyping) {
             const speed = fastMode ? ' · fast' : '';
-            modeLabel.textContent = `typing · ${activeMode}${speed}`;
+            modeLabel.textContent = `typing · ${phase}${speed}`;
             return;
         }
-        if (awaitingChoice) {
-            modeLabel.textContent = fastMode ? 'awaiting · fast' : 'awaiting choice';
+        if (interactive) {
+            modeLabel.textContent = 'interactive';
             return;
         }
-        modeLabel.textContent = typedEl.textContent ? (fastMode ? 'done · fast' : 'done') : 'ready';
+        modeLabel.textContent = typedEl.textContent ? 'done' : 'ready';
     }
 
-    function toggleFastMode() {
-        fastMode = !fastMode;
-        updateModeLabel();
+    function renderInput() {
+        typedEl.textContent = baseScreen + inputBuffer;
+        cursorEl.classList.remove('off');
+        outputEl.scrollTop = outputEl.scrollHeight;
     }
 
-    function toggleHelp() {
-        helpVisible = !helpVisible;
-        helpEl.classList.toggle('visible', helpVisible);
-        helpEl.setAttribute('aria-hidden', String(!helpVisible));
+    function enableFastMode() {
+        if (fastMode) return;
+        fastMode = true;
         updateModeLabel();
     }
 
@@ -458,50 +388,116 @@
         return true;
     }
 
-    async function startBoot() {
-        typingToken += 1;
-        const token = typingToken;
-        activeMode = MODES.boot;
-        awaitingChoice = false;
-        isTyping = true;
-        updateModeLabel();
-
-        flashScreen();
-        await delay(fastMode ? 28 : 280);
-
-        const text = bootScript();
-        const ok = await typeText(text, token, { clear: true, keepCursor: true });
-        if (!ok) return;
-
-        baseScreen = typedEl.textContent;
-        awaitingChoice = true;
+    function enterInteractive() {
+        interactive = true;
+        fastMode = false;
+        inputBuffer = '';
+        cursorEl.classList.remove('off');
         updateModeLabel();
     }
 
-    async function startChoice(mode) {
-        if (mode !== MODES.readme && mode !== MODES.cv) return;
-
+    async function startBoot() {
         typingToken += 1;
         const token = typingToken;
-        activeMode = mode;
-        awaitingChoice = false;
+        phase = 'boot';
+        interactive = false;
+        inputBuffer = '';
+        fastMode = false;
         isTyping = true;
         updateModeLabel();
 
-        if (helpVisible) toggleHelp();
         flashScreen();
-        await delay(fastMode ? 28 : 280);
+        await delay(280);
 
-        typedEl.textContent = baseScreen || typedEl.textContent;
-        const ok = await typeText(contentScript(mode), token, {
-            clear: false,
-            keepCursor: true,
-        });
+        const ok = await typeText(bootScript(), token, { clear: true, keepCursor: true });
         if (!ok) return;
 
         baseScreen = typedEl.textContent;
-        awaitingChoice = true;
+        enterInteractive();
+    }
+
+    function normalizeCommand(raw) {
+        return raw.trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    function resolveCommand(raw) {
+        const cmd = normalizeCommand(raw);
+        if (!cmd) return { kind: 'empty' };
+
+        if (cmd === 'help' || cmd === '?' || cmd === 'h') {
+            return { kind: 'help' };
+        }
+        if (
+            cmd === 'readme' ||
+            cmd === 'r' ||
+            cmd === 'cat readme' ||
+            cmd === 'cat readme.md'
+        ) {
+            return { kind: 'readme' };
+        }
+        if (
+            cmd === 'cv' ||
+            cmd === 'c' ||
+            cmd === 'cat cv' ||
+            cmd === 'cat cv.json'
+        ) {
+            return { kind: 'cv' };
+        }
+        if (cmd === 'clear' || cmd === 'cls') {
+            return { kind: 'clear' };
+        }
+
+        return { kind: 'unknown', raw: raw.trim() };
+    }
+
+    async function runCommand(raw) {
+        const resolved = resolveCommand(raw);
+        if (resolved.kind === 'empty') {
+            baseScreen = typedEl.textContent + '\n' + promptLine();
+            inputBuffer = '';
+            renderInput();
+            return;
+        }
+
+        typingToken += 1;
+        const token = typingToken;
+        interactive = false;
+        fastMode = false;
+        isTyping = true;
+        phase = resolved.kind;
         updateModeLabel();
+
+        let text = '';
+
+        if (resolved.kind === 'help') {
+            text = helpText() + promptLine();
+        } else if (resolved.kind === 'readme') {
+            text = commandOutput('cat README.md', readmeText);
+        } else if (resolved.kind === 'cv') {
+            text = commandOutput('cat cv.json', cvText);
+        } else if (resolved.kind === 'clear') {
+            flashScreen();
+            await delay(120);
+            if (token !== typingToken) return;
+            typedEl.textContent = '';
+            baseScreen = promptLine();
+            inputBuffer = '';
+            isTyping = false;
+            enterInteractive();
+            renderInput();
+            return;
+        } else {
+            text = unknownOutput(resolved.raw);
+        }
+
+        flashScreen();
+        await delay(180);
+
+        const ok = await typeText(text, token, { clear: false, keepCursor: true });
+        if (!ok) return;
+
+        baseScreen = typedEl.textContent;
+        enterInteractive();
         outputEl.scrollTop = outputEl.scrollHeight;
     }
 
@@ -526,33 +522,54 @@
         }
     }
 
-    document.querySelector('.secret').addEventListener('click', toggleHelp);
+    function isPrintableKey(event) {
+        if (event.ctrlKey || event.metaKey || event.altKey) return false;
+        if (event.key.length !== 1) return false;
+        return true;
+    }
+
+    document.querySelector('.secret').addEventListener('click', () => {
+        if (!interactive || isTyping) return;
+        inputBuffer = 'help';
+        renderInput();
+        runCommand(inputBuffer);
+    });
 
     window.addEventListener('keydown', (event) => {
-        const key = event.key.toLowerCase();
-
-        if (key === 'h' || key === 'enter') {
+        if (event.key === 'Enter' && isTyping) {
             event.preventDefault();
-            toggleHelp();
+            enableFastMode();
             return;
         }
 
-        if (key === 'f') {
-            toggleFastMode();
+        if (!interactive || isTyping) return;
+
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const command = inputBuffer;
+            runCommand(command);
             return;
         }
 
-        if (!awaitingChoice) return;
-
-        if (key === 'r') {
+        if (event.key === 'Backspace') {
             event.preventDefault();
-            startChoice(MODES.readme);
+            if (!inputBuffer) return;
+            inputBuffer = inputBuffer.slice(0, -1);
+            renderInput();
             return;
         }
 
-        if (key === 'c') {
+        if (event.key === 'Escape') {
             event.preventDefault();
-            startChoice(MODES.cv);
+            inputBuffer = '';
+            renderInput();
+            return;
+        }
+
+        if (isPrintableKey(event)) {
+            event.preventDefault();
+            inputBuffer += event.key;
+            renderInput();
         }
     });
 
