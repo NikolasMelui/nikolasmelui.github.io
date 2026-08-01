@@ -29,13 +29,13 @@ function formatPastLine(past) {
 }
 
 function formatFocus(current) {
-  return (current?.projects || [])
-    .filter((p) => p.more)
-    .map((p) => {
-      const label = p.title.split(/\s*[—–]\s*|:/)[0].split(/\s+-\s+/)[0].trim();
-      return `[${label}](${p.more})`;
-    })
-    .join(', ');
+    return (current?.projects || [])
+        .filter((p) => p.more)
+        .map((p) => {
+            const label = p.title.split(/\s*[—–]\s*|:/)[0].split(/\s+-\s+/)[0].trim();
+            return `[${label}](${p.more})`;
+        })
+        .join(', ');
 }
 
 function formatReadmeBio(cv) {
@@ -68,13 +68,31 @@ function formatReadmeBio(cv) {
 const bio = formatReadmeBio(cv);
 const block = `${start}\n${bio}\n${end}`;
 
-let readme = fs.readFileSync(readmePath, 'utf8');
+const defaultHeader = `# nikolasmelui
 
-if (readme.includes(start) && readme.includes(end)) {
-    readme = readme.replace(new RegExp(`${start}[\\s\\S]*?${end}`), block);
+Profile and CV live in [\`cv.json\`](./cv.json) — the single source of truth.
+
+- **Site:** [nikolasmelui.github.io](https://nikolasmelui.github.io/) — Matrix-style TUI: \`info\` + \`cv\`
+`;
+
+let readme;
+let created = false;
+
+if (fs.existsSync(readmePath)) {
+    readme = fs.readFileSync(readmePath, 'utf8');
+    if (readme.includes(start) && readme.includes(end)) {
+        readme = readme.replace(new RegExp(`${start}[\\s\\S]*?${end}`), block);
+    } else {
+        readme = `${readme.trim()}\n\n${block}\n`;
+    }
 } else {
-    readme = `${readme.trim()}\n\n${block}\n`;
+    created = true;
+    readme = `${defaultHeader}\n${block}\n`;
 }
 
 fs.writeFileSync(readmePath, `${readme.trim()}\n`);
-console.log('README.md profile section synced from cv.json');
+console.log(
+    created
+        ? 'README.md created and profile section synced from cv.json'
+        : 'README.md profile section synced from cv.json'
+);

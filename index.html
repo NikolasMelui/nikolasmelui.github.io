@@ -166,7 +166,7 @@
 
 <div class="hud" aria-hidden="true">
     <span id="mode-label">typing</span>
-    <span>type a command · enter to run · enter while typing to speed up · help / ? · r / readme · c / cv</span>
+    <span>type a command · enter to run · enter while typing to speed up · info · cv</span>
 </div>
 
 <div class="secret" title="help" aria-label="Run help"></div>
@@ -175,7 +175,7 @@
     const FAST_MULTIPLIER = 0.1;
 
     let typingToken = 0;
-    let readmeText = '';
+    let infoText = '';
     let cvText = '';
     let baseScreen = '';
     let inputBuffer = '';
@@ -237,13 +237,10 @@
         return [
             '',
             '> help — available commands',
-            '  help, ?              show this help',
-            '  readme, r            print README.md',
-            '  cv, c                print cv.json',
-            '  clear                clear the screen',
+            '  info                 who am I',
+            '  cv                   curriculum vitae',
             '',
             '> tip: press Enter while printing to speed up',
-            '> profile data source: cv.json',
             '',
         ].join('\n');
     }
@@ -265,7 +262,7 @@
             '> host: nikolasmelui.github.io',
             '> channel: secure / green',
             '',
-            '> type a command (help / ? for list)',
+            '> type a command',
             '',
             promptLine(),
         ].join('\n');
@@ -428,12 +425,14 @@
             return { kind: 'help' };
         }
         if (
+            cmd === 'info' ||
+            cmd === 'i' ||
             cmd === 'readme' ||
             cmd === 'r' ||
             cmd === 'cat readme' ||
             cmd === 'cat readme.md'
         ) {
-            return { kind: 'readme' };
+            return { kind: 'info' };
         }
         if (
             cmd === 'cv' ||
@@ -471,10 +470,10 @@
 
         if (resolved.kind === 'help') {
             text = helpText() + promptLine();
-        } else if (resolved.kind === 'readme') {
-            text = commandOutput('cat README.md', readmeText);
+        } else if (resolved.kind === 'info') {
+            text = commandOutput('info', infoText);
         } else if (resolved.kind === 'cv') {
-            text = commandOutput('cat cv.json', cvText);
+            text = commandOutput('cv', cvText);
         } else if (resolved.kind === 'clear') {
             flashScreen();
             await delay(120);
@@ -515,10 +514,10 @@
         try {
             const response = await fetch('README.md');
             if (!response.ok) throw new Error('README.md not found');
-            readmeText = stripForTerminal(await response.text());
+            infoText = stripForTerminal(await response.text());
         } catch {
             const current = (cv.work?.positions || []).find((w) => w.actual);
-            readmeText = `${cv.headline} · ${cv.experience} · ${cv.role}${current ? ` at ${current.company}` : ''}`;
+            infoText = `${cv.headline} · ${cv.experience} · ${cv.role}${current ? ` at ${current.company}` : ''}`;
         }
     }
 

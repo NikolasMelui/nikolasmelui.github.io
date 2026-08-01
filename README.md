@@ -2,12 +2,12 @@
 
 Profile and CV live in [`cv.json`](./cv.json) — the single source of truth.
 
-- **Site:** [nikolasmelui.github.io](https://nikolasmelui.github.io/) — Matrix-style view of README + CV
+- **Site:** [nikolasmelui.github.io](https://nikolasmelui.github.io/) — Matrix-style TUI: `info` + `cv`
 - **Sync README bio from cv.json:** `node scripts/sync-readme.js`
 
 <!-- cv:start -->
 Who am I? 🤔  
-Principal backend engineer with 10+ years in building scalable and maintainable systems 💪  
+Principal backend engineer, architect and consultant with 10+ years in building scalable and maintainable systems 💪  
 DevOps culture addict, technology evangelist, software applications architect and lead, responsible for results 👍  
 Open Source contributor 🌱 and IT community enthusiast 🌿, speaker at conferences and meetups 🎤,  
 ex-Principal engineer at [Mechanica](https://mechanica.agency/), ex-CTO at [Anmedio](https://anmedio.ru), ex-Co-founder & CTO at [Multikey Studio](https://multikey.studio),  
